@@ -30,6 +30,10 @@ namespace ConferenceroomBooker.Services
             {
                 throw new ArgumentException("StartTime must be in the future");
             }
+            if(!await IsRoomAvailable(booking.ConferenceRoomId, booking.StartTime, booking.EndTime))
+            {
+                throw new InvalidOperationException("The conference room is not available for the selected time slot.");
+            }
 
             context.Bookings.Add(booking);
             await context.SaveChangesAsync();
@@ -43,6 +47,16 @@ namespace ConferenceroomBooker.Services
                 context.Bookings.Remove(booking);
                 await context.SaveChangesAsync();
             }
+        }
+
+        public async Task<Booking?> GetBookingByIdAsync(int id)
+        {
+            return await context.Bookings.FindAsync(id);
+        }
+
+        public async Task<List<Booking>> GetAllBookingsAsync()
+        {
+            return await context.Bookings.ToListAsync();
         }
     }
 }

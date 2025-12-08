@@ -47,22 +47,30 @@ namespace ConferenceroomBooker.test
         }
 
         [Fact]
-        public async Task TestBookingAddToDatabaseAndRetrieve()
+        public async Task TestBookingAddOverlappingToDatabaseAndRetrieve()
         {
             // Arrange
             var booking = new Booking
             {
                 ApplicationUserId = 1,
                 ConferenceRoomId = 1,
+                StartTime = DateTime.Now.AddHours(1),
+                EndTime = DateTime.Now.AddHours(2)
             };
 
             // Act
             await bookingService.AddBookingAsync(booking);
-            var retrievedBooking = await context.Bookings.FindAsync(booking.Id);
+            var retrievedBooking = await bookingService.GetBookingByIdAsync(booking.Id);
             // Assert
             Assert.NotNull(retrievedBooking);
             Assert.Equal(booking.ApplicationUserId, retrievedBooking.ApplicationUserId);
             Assert.Equal(booking.ConferenceRoomId, retrievedBooking.ConferenceRoomId);
+
+            var ex = await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            {
+                await bookingService.AddBookingAsync(booking);
+            });
+            Assert.Equal("The conference room is not available for the selected time slot.", ex.Message);
         }
 
         [Fact]
@@ -73,6 +81,8 @@ namespace ConferenceroomBooker.test
             {
                 ApplicationUserId = 1,
                 ConferenceRoomId = 1,
+                StartTime = DateTime.Now.AddHours(1),
+                EndTime = DateTime.Now.AddHours(2)
             };
             await bookingService.AddBookingAsync(booking);
 
@@ -82,6 +92,59 @@ namespace ConferenceroomBooker.test
 
             // Assert
             Assert.Null(retrievedBooking);
+        }
+
+        [Fact]
+        public async Task TestBookingGetAllAsync()
+        {
+            // Arrange
+            List<Booking> bookings = new List<Booking>
+            {
+                new Booking
+                {
+                    ApplicationUserId = 1,
+                    ConferenceRoomId = 1,
+                    StartTime = DateTime.Now.AddHours(1),
+                    EndTime = DateTime.Now.AddHours(2)
+                },
+                new Booking
+                {
+                    ApplicationUserId = 2,
+                    ConferenceRoomId = 1,
+                    StartTime = DateTime.Now.AddHours(3),
+                    EndTime = DateTime.Now.AddHours(4)
+                }
+            };
+            await bookingService.AddBookingAsync(bookings[0]);
+            await bookingService.AddBookingAsync(bookings[1]);
+
+            // Act
+            var retrievedBookings = await bookingService.GetAllBookingsAsync();
+
+            // Assert
+            Assert.Equal(2, retrievedBookings.Count);
+            Assert.Equal(bookings[0].ApplicationUserId, retrievedBookings[0].ApplicationUserId);
+            Assert.Equal(bookings[1].ApplicationUserId, retrievedBookings[1].ApplicationUserId);
+        }
+
+        [Fact]
+        public async Task TestBookingCheckAvailability()
+        {
+            // Arrange
+            var booking = new Booking
+            {
+                ApplicationUserId = 1,
+                ConferenceRoomId = 1,
+                StartTime = DateTime.Now.AddHours(1),
+                EndTime = DateTime.Now.AddHours(2)
+            };
+            await bookingService.AddBookingAsync(booking);
+            // Act
+            var isAvailable = await bookingService.IsRoomAvailable(1, DateTime.Now.AddHours(3), DateTime.Now.AddHours(4));
+            var isNotAvailable = await bookingService.IsRoomAvailable(1, DateTime.Now.AddHours(1.5), DateTime.Now.AddHours(2.5));
+            // Assert
+            Assert.True(isAvailable);
+            Assert.False(isNotAvailable);
         }
     }
 }
