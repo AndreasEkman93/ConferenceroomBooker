@@ -1,3 +1,6 @@
+using ConferenceroomBooker.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace ConferenceroomBooker
 {
     public class Program
@@ -8,6 +11,8 @@ namespace ConferenceroomBooker
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             var app = builder.Build();
 
