@@ -1,5 +1,6 @@
 ﻿using ConferenceroomBooker.Data;
 using ConferenceroomBooker.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ConferenceroomBooker.Services
 {
@@ -12,13 +13,13 @@ namespace ConferenceroomBooker.Services
             this.context = context;
         }
 
-        public async void AddUser(ApplicationUser user)
+        public async void AddUserAsync(ApplicationUser user)
         {
             await context.ApplicationUsers.AddAsync(user);
             await context.SaveChangesAsync();
         }
 
-        public async Task DeleteUser(int id)
+        public async Task DeleteUserAsync(int id)
         {
             var user = await context.ApplicationUsers.FindAsync(id);
             if (user != null)
@@ -29,12 +30,17 @@ namespace ConferenceroomBooker.Services
 
         }
 
-        public async Task<ApplicationUser?> GetUser(int id)
+        public async Task<List<ApplicationUser>> GetAllAsync()
+        {
+            return await context.ApplicationUsers.ToListAsync();
+        }
+
+        public async Task<ApplicationUser?> GetUserAsync(int id)
         {
             return await context.ApplicationUsers.FindAsync(id);
         }
 
-        public async Task UpdateUser(ApplicationUser user)
+        public async Task UpdateUserAsync(ApplicationUser user)
         {
             context.ApplicationUsers.Update(user);
             await context.SaveChangesAsync();
