@@ -132,12 +132,12 @@ namespace ConferenceroomBooker.test
             await applicationUserService.AddUserAsync(user2);
 
             // Act
-            List<ApplicationUser> allUsers = await applicationUserService.GetAllAsync();
+            List<ApplicationUser> allUsers = await applicationUserService.GetAllUsersAsync();
 
             // Assert
             Assert.Equal(2, allUsers.Count);
-            Assert.NotNull(allUsers[0]);
-            Assert.NotNull(allUsers[1]);
+            Assert.Contains(allUsers, u => u.Name == "User One");
+            Assert.Contains(allUsers, u => u.Name == "User Two");
 
 
 
