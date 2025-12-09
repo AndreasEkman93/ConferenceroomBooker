@@ -43,8 +43,8 @@ namespace ConferenceroomBooker.test
                 Password = "TestPassword"
             };
             // Act
-
             user.Name = "Updated User";
+
             // Assert
 
             Assert.Equal("Updated User", user.Name);
@@ -60,7 +60,7 @@ namespace ConferenceroomBooker.test
                 Password = "DBPassword"
             };
             // Act
-            applicationUserService.AddUserAsync(user);
+            await applicationUserService.AddUserAsync(user);
             var retrievedUser = await applicationUserService.GetUserAsync(user.Id);
             // Assert
             Assert.NotNull(retrievedUser);
@@ -76,7 +76,7 @@ namespace ConferenceroomBooker.test
                 Name = "Initial User",
                 Password = "InitialPassword"
             };
-            applicationUserService.AddUserAsync(user);
+            await applicationUserService.AddUserAsync(user);
             // Act
             user.Name = "Updated Database User";
             await applicationUserService.UpdateUserAsync(user);
@@ -106,7 +106,7 @@ namespace ConferenceroomBooker.test
             };
 
             // Act
-            applicationUserService.AddUserAsync(user);
+            await applicationUserService.AddUserAsync(user);
             await applicationUserService.DeleteUserAsync(user.Id);
             var deletedUser = await applicationUserService.GetUserAsync(user.Id);
 
@@ -128,8 +128,8 @@ namespace ConferenceroomBooker.test
                 Name = "User Two",
                 Password = "PasswordTwo"
             };
-            applicationUserService.AddUserAsync(user1);
-            applicationUserService.AddUserAsync(user2);
+            await applicationUserService.AddUserAsync(user1);
+            await applicationUserService.AddUserAsync(user2);
 
             // Act
             List<ApplicationUser> allUsers = await applicationUserService.GetAllAsync();

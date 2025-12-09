@@ -13,7 +13,7 @@ namespace ConferenceroomBooker.Services
             this.context = context;
         }
 
-        public async void AddUserAsync(ApplicationUser user)
+        public async Task AddUserAsync(ApplicationUser user)
         {
             await context.ApplicationUsers.AddAsync(user);
             await context.SaveChangesAsync();
@@ -30,7 +30,7 @@ namespace ConferenceroomBooker.Services
 
         }
 
-        public async Task<List<ApplicationUser>> GetAllAsync()
+        public async Task<List<ApplicationUser>> GetAllUsersAsync()
         {
             return await context.ApplicationUsers.ToListAsync();
         }
