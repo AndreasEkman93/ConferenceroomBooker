@@ -22,14 +22,14 @@ namespace ConferenceroomBooker.Services
         }
         public async Task AddBookingAsync(Booking booking)
         {
-            if(booking.StartTime >= booking.EndTime)
-            {
-                throw new ArgumentException("EndTime must be after StartTime");
-            }
-            if(booking.StartTime < DateTime.Now)
-            {
-                throw new ArgumentException("StartTime must be in the future");
-            }
+            //if(booking.StartTime >= booking.EndTime)
+            //{
+            //    throw new ArgumentException("EndTime must be after StartTime");
+            //}
+            //if(booking.StartTime < DateTime.Now)
+            //{
+            //    throw new ArgumentException("StartTime must be in the future");
+            //}
             if(!await IsRoomAvailable(booking.ConferenceRoomId, booking.StartTime, booking.EndTime))
             {
                 throw new InvalidOperationException("The conference room is not available for the selected time slot.");

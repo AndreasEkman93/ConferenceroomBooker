@@ -75,19 +75,19 @@ namespace ConferenceroomBooker.Controllers
 
             try
             {
+                booking.DateValidation(booking.StartTime, booking.EndTime);
                 await bookingService.AddBookingAsync(booking);
                 return RedirectToAction(nameof(Index));
             }
-            catch(ArgumentException ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                
-            }
-            catch(InvalidOperationException ex)
+            catch (ArgumentException ex)
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
             }
-            PopulateViewBags();
+            catch (InvalidOperationException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+            }
+            await PopulateViewBags();
             return View(booking);
         }
 

@@ -6,12 +6,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ConferenceroomBooker.test
 {
-    public class BookingTests : IDisposable
+    public class BookingIntegrationTests : IDisposable
     {
         private ApplicationDbContext context;
         private BookingService bookingService;
 
-        public BookingTests()
+        public BookingIntegrationTests()
         {
             context = CreateInMemoryDbContext();
             bookingService = new BookingService(context);
@@ -33,10 +33,7 @@ namespace ConferenceroomBooker.test
             return context;
         }
 
-        [Fact]
-        public async Task TestBookingCreate()
-        {
-        }
+
 
         [Fact]
         public async Task TestBookingAddOverlappingToDatabaseAndRetrieve()
