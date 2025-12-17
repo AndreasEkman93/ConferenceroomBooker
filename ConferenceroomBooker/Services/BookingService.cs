@@ -54,6 +54,13 @@ namespace ConferenceroomBooker.Services
             return await context.Bookings.FindAsync(id);
         }
 
+        public async Task<List<Booking>> GetBookingsForConferenceRoomAsync(int roomId)
+        {
+            return await context.Bookings
+                .Where(b => b.ConferenceRoomId == roomId)
+                .ToListAsync();
+        }
+
         public async Task<List<Booking>> GetAllBookingsAsync()
         {
             return await context.Bookings.ToListAsync();
