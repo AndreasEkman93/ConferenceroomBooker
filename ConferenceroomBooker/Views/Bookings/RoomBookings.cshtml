@@ -1,18 +1,13 @@
 ﻿@model IEnumerable<ConferenceroomBooker.Models.Booking>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "RoomBookings";
 }
 
-<h1>Index</h1>
+<h1>RoomBookings</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
-    @foreach (var room in ViewBag.ConferenceRooms)
-    {
-        <a asp-action="RoomBookings" asp-route-roomId="@room.Id" style="margin-left:15px;">@room.Name</a>
-	}
-)
 </p>
 <table class="table">
     <thead>

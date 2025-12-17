@@ -63,7 +63,7 @@ namespace ConferenceroomBooker.Services
 
         public async Task<List<Booking>> GetAllBookingsAsync()
         {
-            return await context.Bookings.ToListAsync();
+            return await context.Bookings.OrderBy(r => r.ConferenceRoomId).ToListAsync();
         }
     }
 }

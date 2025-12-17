@@ -27,7 +27,21 @@ namespace ConferenceroomBooker.Controllers
         // GET: Bookings
         public async Task<IActionResult> Index()
         {
+            ViewBag.ConferenceRooms = await conferenceRoomService.GetAllAsync();
             return View(await bookingService.GetAllBookingsAsync());
+        }
+
+        //Get: Bookings/RoomBookings/5
+        public async Task<IActionResult> RoomBookings(int roomId)
+        {
+            var room = await conferenceRoomService.GetConferenceRoomByIdAsync(roomId);
+            if (room == null)
+            {
+                return NotFound();
+            }
+            ViewBag.ConferenceRoom = room;
+            var bookings = await bookingService.GetBookingsForConferenceRoomAsync(roomId);
+            return View(bookings);
         }
 
         // GET: Bookings/Details/5
