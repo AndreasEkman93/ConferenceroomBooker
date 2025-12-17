@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ConferenceroomBooker.test
 {
-    public class ApplicationUserTests : IDisposable
+    public class ApplicationUserIntegrationTests : IDisposable
     {
         private readonly ApplicationDbContext context;
         private readonly ApplicationUserService applicationUserService;
 
-        public ApplicationUserTests()
+        public ApplicationUserIntegrationTests()
         {
             context = CreateInMemoryDbContext();
             applicationUserService = new ApplicationUserService(context);
@@ -33,22 +33,6 @@ namespace ConferenceroomBooker.test
             context.Dispose();
         }
 
-        [Fact]
-        public void TestUserCreateAndEdit()
-        {
-            // Arrange
-            ApplicationUser user = new ApplicationUser
-            {
-                Name = "Test User",
-                Password = "TestPassword"
-            };
-            // Act
-            user.Name = "Updated User";
-
-            // Assert
-
-            Assert.Equal("Updated User", user.Name);
-        }
 
         [Fact]
         public async Task TestUserAddToDatabaseAndRetrieve()
@@ -132,12 +116,12 @@ namespace ConferenceroomBooker.test
             await applicationUserService.AddUserAsync(user2);
 
             // Act
-            List<ApplicationUser> allUsers = await applicationUserService.GetAllAsync();
+            List<ApplicationUser> allUsers = await applicationUserService.GetAllUsersAsync();
 
             // Assert
             Assert.Equal(2, allUsers.Count);
-            Assert.NotNull(allUsers[0]);
-            Assert.NotNull(allUsers[1]);
+            Assert.Contains(allUsers, u => u.Name == "User One");
+            Assert.Contains(allUsers, u => u.Name == "User Two");
 
 
 

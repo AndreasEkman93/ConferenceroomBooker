@@ -8,12 +8,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ConferenceroomBooker.test
 {
-    public class ConferenceRoomTests : IDisposable
+    public class ConferenceRoomIntegrationTests : IDisposable
     {
         private ApplicationDbContext context;
         private ConferenceRoomService conferenceRoomService;
 
-        public ConferenceRoomTests()
+        public ConferenceRoomIntegrationTests()
         {
             context = CreateInMemoryDbContext();
             conferenceRoomService = new ConferenceRoomService(context);
@@ -34,20 +34,6 @@ namespace ConferenceroomBooker.test
             var context = new ApplicationDbContext(options);
             context.Database.EnsureCreated();
             return context;
-        }
-
-        [Fact]
-        public void TestConferenceRoomCreateAndEdit()
-        {
-            // Arrange
-            var conferenceRoom = new ConferenceroomBooker.Models.ConferenceRoom
-            {
-                Name = "Room A"
-            };
-            // Act
-            conferenceRoom.Name = "Updated Room A";
-            // Assert
-            Assert.Equal("Updated Room A", conferenceRoom.Name);
         }
 
         [Fact]

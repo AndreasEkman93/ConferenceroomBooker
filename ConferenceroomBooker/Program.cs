@@ -13,6 +13,9 @@ namespace ConferenceroomBooker
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddTransient<Services.ConferenceRoomService>();
+            builder.Services.AddTransient<Services.BookingService>();
+            builder.Services.AddTransient<Services.ApplicationUserService>();
 
             var app = builder.Build();
 

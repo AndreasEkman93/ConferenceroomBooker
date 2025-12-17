@@ -1,16 +1,17 @@
-﻿using ConferenceroomBooker.Data;
+﻿using System.Threading.Tasks;
+using ConferenceroomBooker.Data;
 using ConferenceroomBooker.Models;
 using ConferenceroomBooker.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace ConferenceroomBooker.test
 {
-    public class BookingTests : IDisposable
+    public class BookingIntegrationTests : IDisposable
     {
         private ApplicationDbContext context;
         private BookingService bookingService;
 
-        public BookingTests()
+        public BookingIntegrationTests()
         {
             context = CreateInMemoryDbContext();
             bookingService = new BookingService(context);
@@ -32,19 +33,7 @@ namespace ConferenceroomBooker.test
             return context;
         }
 
-        [Fact]
-        public void TestBookingCreate()
-        {
 
-            // Act
-            var booking = new Booking
-            {
-                ApplicationUserId = 1,
-                ConferenceRoomId = 1,
-            };
-            // Assert
-            Assert.NotNull(booking);
-        }
 
         [Fact]
         public async Task TestBookingAddOverlappingToDatabaseAndRetrieve()
@@ -146,5 +135,43 @@ namespace ConferenceroomBooker.test
             Assert.True(isAvailable);
             Assert.False(isNotAvailable);
         }
+
+        [Fact]
+        public async Task TestBookingGetAllByConferenceRoomIdAsync()
+        {
+            // Arrange
+            var booking1 = new Booking
+            {
+                ApplicationUserId = 1,
+                ConferenceRoomId = 1,
+                StartTime = DateTime.Now.AddHours(1),
+                EndTime = DateTime.Now.AddHours(2)
+            };
+            var booking2 = new Booking
+            {
+                ApplicationUserId = 2,
+                ConferenceRoomId = 2,
+                StartTime = DateTime.Now.AddHours(3),
+                EndTime = DateTime.Now.AddHours(4)
+            };
+            await bookingService.AddBookingAsync(booking1);
+            await bookingService.AddBookingAsync(booking2);
+            // Act
+            var retrievedBooking1 = await bookingService.GetBookingsForConferenceRoomAsync(booking1.ConferenceRoomId);
+            var retrievedBooking2 = await bookingService.GetBookingsForConferenceRoomAsync(booking2.ConferenceRoomId);
+
+            // Assert
+            Assert.Equal(1, retrievedBooking1[0].ConferenceRoomId);
+            Assert.Equal(2, retrievedBooking2[0].ConferenceRoomId);
+        }
     }
 }
+
+//Enhetstester:
+// Testa logiken för att skapa bokningar.
+// Testa att överlappande bokningar nekas.
+// Testa tillgänglighetskontrollen.
+//Integrationstester:
+// Testa att bokningar sparas korrekt i databasen.
+// Testa att bokningar kan hämtas från databasen.
+// Testa att systemet fungerar med en riktig databas (SQLite eller SQL Server).
